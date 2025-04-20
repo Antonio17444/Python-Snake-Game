@@ -10,20 +10,30 @@ altura = 400
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Snake Game - Henrique and Fernando")
 
-# Contagem de FPS:
-relogio = pygame.time.Clock()
+# Informações básicas: 
+relogio = pygame.time.Clock() # FPS
+rodando = True # Determina o fechamendo do programa True/False
+branco = (255, 255, 255)
 
 # Loop do Game:
 
-while True:
+while rodando:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             pygame.quit()
-            sys.exit()
+            rodando = False
 
     # Inicio da criação do Game:
+    tela.fill(branco)
 
 
+    # VAMOS COLOCAR O CÓDIGO DO GAME ESSE INTERVALO ENTRE O fill/flip - Henrique
+
+
+    pygame.display.flip()
+    relogio.tick(60)  # Trás a variavel "relogio", para limitar o FPS em 60 - Henrique
+
+pygame.quit()
 
 
 
