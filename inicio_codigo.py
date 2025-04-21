@@ -1,121 +1,99 @@
 import pygame
-import sys
+from random import randint
 
-# Definindo as cores.
-BRANCO = (255,255,255)
-PRETO = (0, 0, 0) #Tabuleiro
-VERMELHO = (255, 0, 0) #Pontos 
-AZUL = (0, 0, 255) # Cobra
+# Constantes
 
-#Outras constates
+largura = 640
+altura = 480
 
-Vel = 5 # velocidade da personagem (cobra) pixel/seg
-TAMANHOBLOCO = 20 #Tamanho do lado do bloco em pixels
+vel = 15
 
-#função mover jogador
+# Flag para definir se o jogo continua rodando
 
-def mover(jogador,tecla,dim_janela):
-    borda_esquerda = 0
-    borda_superior = 0
-    borda_direita = dim_janela[0]
-    borda_inferior = dim_janela[1]
-    if tecla['esquerda'] and jogador['objRect'].left > borda_esquerda:
-        jogador['objRect'].x -= jogador['vel']
-    if tecla['direita'] and jogador['objRect'].right < borda_direita:
-        jogador['objRect'].x += jogador['vel']
-    if tecla['cima'] and jogador['objRect'].top > borda_superior:
-        jogador['objRect'].y -= jogador['vel']
-    if tecla['baixo'] and jogador['objRect'].bottom < borda_inferior:
-        jogador['objRect'].y += jogador['vel']
-                                        
-#função mover bloco
+rodando = True
 
-def moverBloco(bloco):
-    bloco['objRect'].y += bloco['vel']
-                             
-# iniciando o Pygame - Henrique                                    
+# Variáveis
 
-pygame.init() 
+x = largura/2 # variavel que controla o movimento no eixo x (retangulo azul)
+y = altura/2 # variavel que controla o movimento no eixo y (retangulo azul)
 
-# Tamanho da Janela:
+x_ponto = randint(40,600)
+y_ponto = randint(40,440)
 
-largura = 800
-altura = 400
-tela = pygame.display.set_mode((largura, altura))
-pygame.display.set_caption("Snake Game - Henrique and Fernando")
 
-# Informações básicas: 
-relogio = pygame.time.Clock() # FPS
-rodando = True # Determina o fechamendo do programa True/False
 
-#Criado jogador
+# Inicializando modulos do pygame
 
-jogador = {'objRect': pygame.Rect(300, 100, 50, 50), 'cor': AZUL, 'vel': Vel}
+pygame.init()  
 
-# definindo o dicionario que guardará as direcoes pressionadas
+# Criando tela
 
-tecla = {'esquerda': False, 'direita': False, 'cima': False, 'baixo': False}
+tela = pygame.display.set_mode((largura, altura))  
 
-#outras variaveis
+# fps
 
-blocos = []
+relogio = pygame.time.Clock()
 
-# Loop do Game:
+# Definidos elementos do texto
+
+contador_de_pontos = 0
+fonte = pygame.font.SysFont('Arial',40,False,True)
+
+# Loop onde o jogo deve rodar
 
 while rodando:
-    for evento in pygame.event.get():
-        if evento.type == pygame.QUIT:
-            pygame.quit()
+
+    mensagem = f'Pontos: {contador_de_pontos}' # mensagem dentro do while para atualizar os pontos
+    texto = fonte.render(mensagem,True,(255,255,255)) #formatando texto
+    
+
+
+    relogio.tick(60) # fps
+
+    tela.fill((0, 0, 0))  # Limpa a tela com cor preta
+    
+    for event in pygame.event.get():  # Detecta eventos
+        if event.type == pygame.QUIT:
             rodando = False
 
-        # quando uma tecla é pressionada
-    if evento.type == pygame.KEYDOWN:
-        if evento.key == pygame.K_ESCAPE:
-            deve_continuar = False
-        if evento.key == pygame.K_LEFT or evento.key == pygame.K_a:
-            tecla['esquerda'] = True
-        if evento.key == pygame.K_RIGHT or evento.key == pygame.K_d:
-            tecla['direita'] = True
-        if evento.key == pygame.K_UP or evento.key == pygame.K_w:
-            tecla['cima'] = True
-        if evento.key == pygame.K_DOWN or evento.key == pygame.K_s:
-            tecla['baixo'] = True
+    # Verifica se o jogador saiu da tela(se sim entao o progama fecha)
 
-    # quando uma tecla é solta
-    if evento.type == pygame.KEYUP:
-        if evento.key == pygame.K_LEFT or evento.key == pygame.K_a:
-            tecla['esquerda'] = False
-        if evento.key == pygame.K_RIGHT or evento.key == pygame.K_d:
-            tecla['direita'] = False
-        if evento.key == pygame.K_UP or evento.key == pygame.K_w:
-            tecla['cima'] = False
-        if evento.key == pygame.K_DOWN or evento.key == pygame.K_s:
-            tecla['baixo'] = False
+    if y >= altura:
+        rodando = False
+    if x >= largura:
+        rodando = False
+    if y <= 0:
+        rodando = False
+    if x <= 0:
+        rodando = False
 
-    # quando um botão do mouse é pressionado
-        if evento.type == pygame.MOUSEBUTTONDOWN:
-            blocos.append({'objRect': pygame.Rect(evento.pos[0], evento.pos[1], TAMANHOBLOCO, TAMANHOBLOCO), 'cor': BRANCO, 'vel': 1})
+    # ver quais teclas sao presionadas
 
-    # Inicio da criação do Game:
-    tela.fill(PRETO)
+    teclas = pygame.key.get_pressed() 
 
-    # movendo o jogador
+    if teclas[pygame.K_UP]:
+        y -= vel
+    if teclas[pygame.K_DOWN]:
+        y += vel
+    if teclas[pygame.K_LEFT]:
+        x -= vel
+    if teclas[pygame.K_RIGHT]:
+        x += vel
+    
+    jogador = pygame.draw.rect(tela, (0, 0, 255), (x, y, 40, 40))  # Desenha o retângulo azul
 
-    mover(jogador, tecla, (largura, altura))
+    ponto = pygame.draw.rect(tela, (255, 255, 255), (x_ponto, y_ponto, 40, 40))  # Desenha os pontos
 
-    # desenhando jogador
+    # Ver se o jogador colidiu com o ponto se sim entao adiciona 1 ao contador e mudar o ponto para um lugar randomico
 
-    pygame.draw.rect(tela, jogador['cor'], jogador['objRect'])
-                                                     
-    for bloco in blocos[:]:
-        bateu = jogador['objRect'].colliderect(bloco['objRect'])
-        if bateu or bloco['objRect'].y > altura:
-            blocos.remove(bloco)
+    if jogador.colliderect(ponto):
+        x_ponto = randint(40,600)
+        y_ponto = randint(40,440)
+        contador_de_pontos += 1
 
-    pygame.display.flip()
-    relogio.tick(60)  # Trás a variavel "relogio", para limitar o FPS em 60 - Henrique
+    tela.blit(texto,(0,0)) #imprimindo na tela a mensagem
+
+
+    pygame.display.update()  # Atualiza a tela
 
 pygame.quit()
-
-
-
