@@ -6,7 +6,7 @@ from random import randint
 largura = 640
 altura = 480
 
-vel = 15
+vel = 10
 
 # Flag para definir se o jogo continua rodando
 
@@ -28,11 +28,24 @@ pygame.init()
 pygame.mixer.init() # Iniciando modulo de musica
 pygame.mixer.music.load("SnakeGameTheme/trilha.ogg") # Add o mp3 da musica tema
 pygame.mixer.music.play(-1) # loop (-1) roda ate o jogo fechar
+som_colisao = pygame.mixer.Sound("SnakeGameTheme/coleta.ogg")
+som_colisao.set_volume(0.5)
 
 # Texturas 
 
-cabeca_img = pygame.image.load("Texture/cabeca_snake.png")
-cabeca_img = pygame.transform.scale(cabeca_img, (40, 40))
+cabeca_cima = pygame.image.load("Texture/cabeca_cima.png")
+cabeca_baixo = pygame.image.load("Texture/cabeca_baixo.png")
+cabeca_esquerda = pygame.image.load("Texture/cabeca_esquerda.png")
+cabeca_direita = pygame.image.load("Texture/cabeca_direita.png")
+
+# ajustanto tamanho das texturas
+
+cabeca_cima = pygame.transform.scale(cabeca_cima, (40, 40))
+cabeca_baixo = pygame.transform.scale(cabeca_baixo, (40, 40))
+cabeca_esquerda = pygame.transform.scale(cabeca_esquerda, (40, 40))
+cabeca_direita = pygame.transform.scale(cabeca_direita, (40, 40))
+
+cabeca_atual = cabeca_cima
 
 # Criando tela
 
@@ -81,20 +94,28 @@ while rodando:
 
     if teclas[pygame.K_UP]:
         y -= vel
+        cabeca_atual = cabeca_cima
+
     if teclas[pygame.K_DOWN]:
         y += vel
+        cabeca_atual = cabeca_baixo
+
     if teclas[pygame.K_LEFT]:
         x -= vel
+        cabeca_atual = cabeca_esquerda
+
     if teclas[pygame.K_RIGHT]:
         x += vel
-    
-    jogador = tela.blit(cabeca_img, (x, y))
+        cabeca_atual = cabeca_direita
+
+    jogador = tela.blit(cabeca_atual, (x, y))
 
     ponto = pygame.draw.rect(tela, (255, 255, 255), (x_ponto, y_ponto, 40, 40))  # Desenha os pontos
 
     # Ver se o jogador colidiu com o ponto se sim entao adiciona 1 ao contador e mudar o ponto para um lugar randomico
 
     if jogador.colliderect(ponto):
+        som_colisao.play()
         x_ponto = randint(40,600)
         y_ponto = randint(40,440)
         contador_de_pontos += 1
