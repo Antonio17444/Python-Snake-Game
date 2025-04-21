@@ -24,7 +24,10 @@ y_ponto = randint(40,440)
 
 # Inicializando modulos do pygame
 
-pygame.init()  
+pygame.init()
+pygame.mixer.init() # Iniciando modulo de musica
+pygame.mixer.music.load("SnakeGameTheme/trilha.ogg") # Add o mp3 da musica tema
+pygame.mixer.music.play(-1) # loop (-1) roda ate o jogo fechar
 
 # Criando tela
 
@@ -93,7 +96,7 @@ while rodando:
 
     tela.blit(texto,(0,0)) #imprimindo na tela a mensagem
 
-
     pygame.display.update()  # Atualiza a tela
 
+pygame.mixer.music.stop()
 pygame.quit()
