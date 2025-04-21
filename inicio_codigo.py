@@ -29,6 +29,11 @@ pygame.mixer.init() # Iniciando modulo de musica
 pygame.mixer.music.load("SnakeGameTheme/trilha.ogg") # Add o mp3 da musica tema
 pygame.mixer.music.play(-1) # loop (-1) roda ate o jogo fechar
 
+# Texturas 
+
+cabeca_img = pygame.image.load("Texture/cabeca_snake.png")
+cabeca_img = pygame.transform.scale(cabeca_img, (40, 40))
+
 # Criando tela
 
 tela = pygame.display.set_mode((largura, altura))  
@@ -83,7 +88,7 @@ while rodando:
     if teclas[pygame.K_RIGHT]:
         x += vel
     
-    jogador = pygame.draw.rect(tela, (0, 0, 255), (x, y, 40, 40))  # Desenha o retângulo azul
+    jogador = tela.blit(cabeca_img, (x, y))
 
     ponto = pygame.draw.rect(tela, (255, 255, 255), (x_ponto, y_ponto, 40, 40))  # Desenha os pontos
 
