@@ -6,7 +6,7 @@ from random import randint
 largura = 640
 altura = 480
 
-vel = 7
+vel = 5
 
 # Flag para definir se o jogo continua rodando
 
@@ -22,7 +22,7 @@ y_ponto = randint(40,440)
 
 lista_tudo = []
 
-x_controle = vel
+x_controle = 0
 y_controle = 0
 
 # Inicializando modulos do pygame
@@ -31,11 +31,24 @@ pygame.init()
 pygame.mixer.init() # Iniciando modulo de musica
 pygame.mixer.music.load("SnakeGameTheme/trilha.ogg") # Add o mp3 da musica tema
 pygame.mixer.music.play(-1) # loop (-1) roda ate o jogo fechar
+som_colisao = pygame.mixer.Sound("SnakeGameTheme/coleta.ogg") # Sound de colisão
+som_colisao.set_volume(0.5)
 
 # Texturas 
 
-cabeca_img = pygame.image.load("Texture/cabeca_snake.png")
-cabeca_img = pygame.transform.scale(cabeca_img, (40, 40))
+cabeca_cima = pygame.image.load("Texture/cabeca_cima.png")
+cabeca_baixo = pygame.image.load("Texture/cabeca_baixo.png")
+cabeca_esquerda = pygame.image.load("Texture/cabeca_esquerda.png")
+cabeca_direita = pygame.image.load("Texture/cabeca_direita.png")
+
+# ajustanto tamanho das texturas
+
+cabeca_cima = pygame.transform.scale(cabeca_cima, (40, 40))
+cabeca_baixo = pygame.transform.scale(cabeca_baixo, (40, 40))
+cabeca_esquerda = pygame.transform.scale(cabeca_esquerda, (40, 40))
+cabeca_direita = pygame.transform.scale(cabeca_direita, (40, 40))
+
+cabeca_atual = cabeca_cima
 
 # Criando tela
 
@@ -56,7 +69,7 @@ def movecorpo(lista_tudo):
     
     for i in range (len(lista_tudo)-1,-1,-1):
         #pygame.draw.rect(tela, (0, 0, 255), (lista_tudo[i][0], lista_tudo[i][1], 40, 40))  # Desenha o retângulo azul atraz do jogador
-        tela.blit(cabeca_img, (lista_tudo[i][0], lista_tudo[i][1])) #esta dando erro na cabeça do boneco
+        tela.blit(cabeca_atual, (lista_tudo[i][0], lista_tudo[i][1])) #esta dando erro na cabeça do boneco
 
 # Loop onde o jogo deve rodar
 
@@ -75,36 +88,32 @@ while rodando:
         
         # ver quais teclas sao presionadas
         
-        teclas = pygame.key.get_pressed() 
+    teclas = pygame.key.get_pressed() 
 
-        if teclas[pygame.K_UP]:
-            if y_controle == vel:
-                pass
-            else:
-                y_controle = -vel
-                x_controle = 0
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            rodando = False
 
-        if teclas[pygame.K_DOWN]:
-            if y_controle == -vel:
-                pass
-            else:
-                y_controle = +vel
-                x_controle = 0
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_UP and y_controle != vel:
+            y_controle = -vel
+            x_controle = 0
+            cabeca_atual = cabeca_cima
 
-        if teclas[pygame.K_LEFT]:
-            if x_controle == vel:
-                pass
-            else:
-                x_controle = -vel
-                y_controle = 0
+        elif event.key == pygame.K_DOWN and y_controle != -vel:
+            y_controle = vel
+            x_controle = 0
+            cabeca_atual = cabeca_baixo
 
-        if teclas[pygame.K_RIGHT]:
-            if x_controle == -vel:
-                pass
-            else:    
-                x_controle = vel
-                y_controle = 0
+        elif event.key == pygame.K_LEFT and x_controle != vel:
+            x_controle = -vel
+            y_controle = 0
+            cabeca_atual = cabeca_esquerda
 
+        elif event.key == pygame.K_RIGHT and x_controle != -vel:
+            x_controle = vel
+            y_controle = 0
+            cabeca_atual = cabeca_direita
 
     # Verifica se o jogador saiu da tela(se sim entao o progama fecha)
 
@@ -122,13 +131,14 @@ while rodando:
     x += x_controle
     y += y_controle
 
-    jogador = tela.blit(cabeca_img, (x, y))
+    jogador = tela.blit(cabeca_atual, (x, y))
 
     ponto = pygame.draw.rect(tela, (255, 255, 255), (x_ponto, y_ponto, 40, 40))  # Desenha os pontos
 
     # Ver se o jogador colidiu com o ponto se sim entao adiciona 1 ao contador e mudar o ponto para um lugar randomico
 
     if jogador.colliderect(ponto):
+        som_colisao.play()
         x_ponto = randint(40,600)
         y_ponto = randint(40,440)
         contador_de_pontos += 1
