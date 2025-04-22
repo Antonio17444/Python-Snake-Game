@@ -113,6 +113,11 @@ while rodando:
 
     if len(lista_tudo) > contador_de_pontos+1:
         lista_tudo.pop(0)
+    
+    # Colisão com o corpo da cobra
+
+    if lista_tudo.count(lista_cabeca) > 1:
+        rodando = False
 
     # chamando a funcao
 
