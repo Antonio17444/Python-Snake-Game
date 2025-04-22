@@ -1,5 +1,6 @@
 import pygame
 from random import randint
+import Funcoes
 
 # Constantes
 
@@ -63,14 +64,6 @@ relogio = pygame.time.Clock()
 contador_de_pontos = 0
 fonte = pygame.font.SysFont('Arial',40,False,True)
 
-# função que faz os pontos irem para o corpo do jogador
-
-def movecorpo(lista_tudo):
-    
-    for i in range (len(lista_tudo)-1,-1,-1):
-        #pygame.draw.rect(tela, (0, 0, 255), (lista_tudo[i][0], lista_tudo[i][1], 40, 40))  # Desenha o retângulo azul atraz do jogador
-        tela.blit(cabeca_atual, (lista_tudo[i][0], lista_tudo[i][1])) #esta dando erro na cabeça do boneco
-
 # Loop onde o jogo deve rodar
 
 while rodando:
@@ -81,55 +74,15 @@ while rodando:
     relogio.tick(60) # fps
 
     tela.fill((0, 0, 0))  # Limpa a tela com cor preta
-    
-    for event in pygame.event.get():  # Detecta eventos
-        if event.type == pygame.QUIT:
-            rodando = False
         
-        # ver quais teclas sao presionadas
-        
-    teclas = pygame.key.get_pressed() 
+    resposta = Funcoes.teclados(x_controle, y_controle, vel, cabeca_atual, cabeca_cima, cabeca_baixo, cabeca_esquerda, cabeca_direita,x,y)
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            rodando = False
-
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_UP and y_controle != vel:
-            y_controle = -vel
-            x_controle = 0
-            cabeca_atual = cabeca_cima
-
-        elif event.key == pygame.K_DOWN and y_controle != -vel:
-            y_controle = vel
-            x_controle = 0
-            cabeca_atual = cabeca_baixo
-
-        elif event.key == pygame.K_LEFT and x_controle != vel:
-            x_controle = -vel
-            y_controle = 0
-            cabeca_atual = cabeca_esquerda
-
-        elif event.key == pygame.K_RIGHT and x_controle != -vel:
-            x_controle = vel
-            y_controle = 0
-            cabeca_atual = cabeca_direita
-
-    # Verifica se o jogador saiu da tela(se sim entao o progama fecha)
-
-    if y >= altura:
+    if resposta is None:
         rodando = False
-    if x >= largura:
-        rodando = False
-    if y <= 0:
-        rodando = False
-    if x <= 0:
-        rodando = False
+    else:
+        x_controle, y_controle, cabeca_atual,x,y = resposta
 
-    # usando para o jogador nao se mover nas diagonais
-
-    x += x_controle
-    y += y_controle
+    rodando = Funcoes.veriificar_se_jogador_saiu_da_tela(x,y,altura,largura)
 
     jogador = tela.blit(cabeca_atual, (x, y))
 
@@ -163,7 +116,7 @@ while rodando:
 
     # chamando a funcao
 
-    movecorpo(lista_tudo)
+    Funcoes.movecorpo(lista_tudo,tela,cabeca_atual)
     
     pygame.display.update()  # Atualiza a tela
 
