@@ -23,10 +23,12 @@ def Variaveis(largura,altura):
     y = (altura - tamanho_bloco) // 2
     x_controle = 0
     y_controle = 0
-    FPS = 60
+    FPS = 30
     x_comida = randint(40,600)
     y_comida = randint(40,440)
-    return velocidade,tamanho_bloco,x,y,x_controle,y_controle,FPS,x_comida,y_comida
+    contador_de_pontos = 0
+    lista_Corpo = []
+    return velocidade,tamanho_bloco,x,y,x_controle,y_controle,FPS,x_comida,y_comida,contador_de_pontos,lista_Corpo
 
 def teclados(x_controle, y_controle, vel,x,y):
     for event in pygame.event.get():
@@ -64,3 +66,28 @@ def colisao(jogador,comida,contador_de_pontos):
         x_comida = comida.x
         y_comida = comida.y
     return x_comida, y_comida, contador_de_pontos
+    
+def texto(fonte,contador_de_pontos,BRANCO,tela):
+    mensagem = f'Pontos: {contador_de_pontos}' # mensagem dentro do while para atualizar os pontos
+    texto = fonte.render(mensagem,True,(BRANCO)) #formatando texto
+    return tela.blit(texto,(0,0))
+
+def Jogador_saiu_tela(rodando,x,y,largura,altura):
+    if x <= 0:
+        rodando = False
+    if x >= largura:
+        rodando = False
+    if y <= 0:
+        rodando = False
+    if y >= altura:
+        rodando = False
+    return rodando
+
+def comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,contador_de_pontos):
+    lista_corpo.append((x, y))
+    for bloco in lista_corpo:
+        pygame.draw.rect(tela, VERDE, (*bloco, tamanho_bloco, tamanho_bloco))
+    jogador = pygame.draw.rect(tela,AZUL,(x,y,tamanho_bloco,tamanho_bloco))
+
+    if len(lista_corpo) > contador_de_pontos:
+        lista_corpo.pop(0)
