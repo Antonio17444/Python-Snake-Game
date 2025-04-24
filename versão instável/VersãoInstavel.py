@@ -18,7 +18,7 @@ fonte = pygame.font.SysFont('Arial',40,False,True)
 clock = pygame.time.Clock()  # Cria o relógio
 
 while rodando:
-    
+
     clock.tick(FPS)
     tela.fill(PRETO)
     
@@ -38,12 +38,11 @@ while rodando:
     # DESENHO DO JOGADOR E DA COMIDA
 
     x_comida,y_comida,contador_de_pontos = Funcoes.colisao(jogador,comida,contador_de_pontos)
-
+    
+    rodando = Funcoes.colisao_corpo(x, y, lista_corpo)
     rodando = Funcoes.Jogador_saiu_tela(rodando,x,y,largura,altura)
 
     Funcoes.comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,contador_de_pontos)
     
-    rodando = Funcoes.colisao_corpo(x, y, lista_corpo)
-
     pygame.display.update()
 pygame.quit()
