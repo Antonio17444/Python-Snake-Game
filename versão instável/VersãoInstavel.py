@@ -42,6 +42,8 @@ while rodando:
     rodando = Funcoes.Jogador_saiu_tela(rodando,x,y,largura,altura)
 
     Funcoes.comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,contador_de_pontos)
+    
+    rodando = Funcoes.colisao_corpo(x, y, lista_corpo)
 
     pygame.display.update()
 pygame.quit()

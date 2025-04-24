@@ -17,13 +17,13 @@ def Cores():
     return PRETO,BRANCO,AZUL,VERMELHO,VERDE
 
 def Variaveis(largura,altura):
-    velocidade = 10
+    velocidade = 30  #para evitar bug das textura uma dentro da outra deixar velocidade = tamanho do bloco
     tamanho_bloco = 30
     x = (largura - tamanho_bloco) // 2
     y = (altura - tamanho_bloco) // 2
     x_controle = 0
     y_controle = 0
-    FPS = 30
+    FPS = 15
     x_comida = randint(40,600)
     y_comida = randint(40,440)
     contador_de_pontos = 0
@@ -66,7 +66,7 @@ def colisao(jogador,comida,contador_de_pontos):
         x_comida = comida.x
         y_comida = comida.y
     return x_comida, y_comida, contador_de_pontos
-    
+
 def texto(fonte,contador_de_pontos,BRANCO,tela):
     mensagem = f'Pontos: {contador_de_pontos}' # mensagem dentro do while para atualizar os pontos
     texto = fonte.render(mensagem,True,(BRANCO)) #formatando texto
@@ -91,3 +91,9 @@ def comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,co
 
     if len(lista_corpo) > contador_de_pontos:
         lista_corpo.pop(0)
+
+def colisao_corpo(x, y, lista_corpo):
+    corpo_sem_cabeca = lista_corpo[:-1]
+    if (x, y) in corpo_sem_cabeca:
+        return False
+    return True
