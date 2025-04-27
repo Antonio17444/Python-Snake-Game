@@ -9,10 +9,18 @@ Vel,tamanho_bloco,x,y,x_controle,y_controle,FPS,x_comida,y_comida,contador_de_po
 
 pygame.init()
 
+# Sons do Game
+
+trilha, som_morder = Funcoes.som()
+
+trilha.play(-1)
+
 # TELA/JANELA
+
 tela = pygame.display.set_mode((largura,altura))
 pygame.display.set_caption("Jogo Da Cobrinha")
 fonte = pygame.font.SysFont('Arial',40,False,True)
+
 # TELA/JANELA
 
 clock = pygame.time.Clock()  # Cria o relógio
@@ -37,7 +45,7 @@ while rodando:
     comida = pygame.draw.rect(tela,BRANCO,(x_comida,y_comida,tamanho_bloco,tamanho_bloco))
     # DESENHO DO JOGADOR E DA COMIDA
 
-    x_comida,y_comida,contador_de_pontos = Funcoes.colisao(jogador,comida,contador_de_pontos)
+    x_comida,y_comida,contador_de_pontos = Funcoes.colisao(jogador,comida,contador_de_pontos, som_morder)
     
     rodando = Funcoes.colisao_corpo(x, y, lista_corpo)
     rodando = Funcoes.Jogador_saiu_tela(rodando,x,y,largura,altura)

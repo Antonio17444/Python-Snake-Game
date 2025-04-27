@@ -1,6 +1,12 @@
 import pygame
 from random import randint
+
 pygame.init()
+
+def som():
+    trilha = pygame.mixer.Sound("music/SnakeTheme.mp3")
+    som_morder = pygame.mixer.Sound("music/morder.mp3")
+    return trilha, som_morder
 
 def Constates():
     rodando = True
@@ -57,8 +63,9 @@ def teclados(x_controle, y_controle, vel,x,y):
 
     return x_controle, y_controle,x,y
 
-def colisao(jogador,comida,contador_de_pontos):
+def colisao(jogador,comida,contador_de_pontos, som_morder):
     if jogador.colliderect(comida):
+        som_morder.play()
         x_comida = randint(40, 600)
         y_comida = randint(40, 440)
         contador_de_pontos += 1
