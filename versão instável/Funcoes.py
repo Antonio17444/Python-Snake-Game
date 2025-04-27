@@ -6,7 +6,11 @@ pygame.init()
 def som():
     trilha = pygame.mixer.Sound("music/SnakeTheme.mp3")
     som_morder = pygame.mixer.Sound("music/morder.mp3")
-    return trilha, som_morder
+    som_death = pygame.mixer.Sound("music/Death.mp3")
+    som_death.set_volume(0.5)
+    trilha.set_volume(0.2)
+    som_morder.set_volume(0.5)
+    return trilha, som_morder, som_death
 
 def Constates():
     rodando = True
@@ -79,14 +83,9 @@ def texto(fonte,contador_de_pontos,BRANCO,tela):
     texto = fonte.render(mensagem,True,(BRANCO)) #formatando texto
     return tela.blit(texto,(0,0))
 
-def Jogador_saiu_tela(rodando,x,y,largura,altura):
-    if x <= 0:
-        rodando = False
-    if x >= largura:
-        rodando = False
-    if y <= 0:
-        rodando = False
-    if y >= altura:
+def Jogador_saiu_tela(rodando,x,y,largura,altura, som_death):
+    if x <= 0 or x >= largura or y <= 0 or y >= altura:
+        som_death.play()
         rodando = False
     return rodando
 
@@ -99,8 +98,9 @@ def comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,co
     if len(lista_corpo) > contador_de_pontos:
         lista_corpo.pop(0)
 
-def colisao_corpo(x, y, lista_corpo):
+def colisao_corpo(x, y, lista_corpo, som_death):
     corpo_sem_cabeca = lista_corpo[:-1]
     if (x, y) in corpo_sem_cabeca:
+        som_death.play()
         return False
     return True

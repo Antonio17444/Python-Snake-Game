@@ -11,7 +11,7 @@ pygame.init()
 
 # Sons do Game
 
-trilha, som_morder = Funcoes.som()
+trilha, som_morder, som_death = Funcoes.som()
 
 trilha.play(-1)
 
@@ -47,8 +47,8 @@ while rodando:
 
     x_comida,y_comida,contador_de_pontos = Funcoes.colisao(jogador,comida,contador_de_pontos, som_morder)
     
-    rodando = Funcoes.colisao_corpo(x, y, lista_corpo)
-    rodando = Funcoes.Jogador_saiu_tela(rodando,x,y,largura,altura)
+    rodando = Funcoes.colisao_corpo(x, y, lista_corpo, som_death)
+    rodando = Funcoes.Jogador_saiu_tela(rodando,x,y,largura,altura, som_death)
 
     Funcoes.comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,contador_de_pontos)
     
