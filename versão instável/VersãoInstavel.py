@@ -18,7 +18,7 @@ trilha.play(-1)
 # TELA/JANELA
 
 tela = pygame.display.set_mode((largura,altura))
-pygame.display.set_caption("Jogo Da Cobrinha")
+pygame.display.set_caption("Snake Game")
 fonte = pygame.font.SysFont('Arial',40,False,True)
 
 # TELA/JANELA
