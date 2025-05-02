@@ -161,6 +161,45 @@ def jogo():
     pygame.quit()
     menu()
 
+def creditos():
+    rodando, largura, altura = Constates()  # Constantes
+    PRETO, BRANCO, AZUL, VERMELHO, VERDE = Cores()  # Cores
+
+    pygame.init()
+
+    # TELA/JANELA
+    tela = pygame.display.set_mode((largura, altura))
+    pygame.display.set_caption("Snake Game")
+
+    # Texto
+    fonte = pygame.font.SysFont('Arial', 40, False, True)
+    fonte1 = pygame.font.SysFont('Arial', 80, False, True)
+    texto0 = fonte1.render("CRÉDITOS", True, VERMELHO)
+    texto1 = fonte.render("Antonio Henrique Vigo Leite", True, VERDE)
+    texto2 = fonte.render("Fernando Pereira Dos Santos", True, VERDE)
+
+    # Retângulos dos textos com centralização
+    rect0 = texto0.get_rect(center=(largura // 2, altura // 2 - 180))
+    rect1 = texto1.get_rect(center=(largura // 2, altura // 2 - 60))
+    rect2 = texto2.get_rect(center=(largura // 2, altura // 2))
+
+    while rodando:
+        tela.fill(PRETO)
+
+        # Desenhar os textos
+        tela.blit(texto0, rect0)
+        tela.blit(texto1, rect1)
+        tela.blit(texto2, rect2)
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                rodando = False
+
+        pygame.display.update()
+
+    pygame.quit()
+    menu()
+    
 def menu():
     rodando, largura, altura = Constates()  # Constantes
     PRETO, BRANCO, AZUL, VERMELHO, VERDE = Cores()  # Cores
@@ -209,7 +248,7 @@ def menu():
                         jogo()
 
                     elif bloco_creditos.collidepoint(pos_mouse):
-                        print("Clicou em CRÉDITOS")
+                        creditos()
 
                     elif bloco_sair.collidepoint(pos_mouse):
                         rodando = False
