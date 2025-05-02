@@ -159,3 +159,49 @@ def jogo():
         
         pygame.display.update()
     pygame.quit()
+
+def menu():
+    rodando, largura, altura = Constates()  # Constantes
+    PRETO, BRANCO, AZUL, VERMELHO, VERDE = Cores()  # Cores
+
+    pygame.init()
+
+    # TELA/JANELA
+    tela = pygame.display.set_mode((largura, altura))
+    pygame.display.set_caption("Snake Game")
+
+    # Texto
+    fonte = pygame.font.SysFont('Arial', 40, False, True)
+    fonte1 = pygame.font.SysFont('Arial', 80, False, True)
+    texto0 = fonte1.render("Snake Game", True, VERMELHO)
+    texto1 = fonte.render("PLAY", True, VERDE)
+    texto2 = fonte.render("CRÉDITOS", True, VERDE)
+    texto3 = fonte.render("SAIR", True, VERDE)
+
+    # Retângulos dos textos com centralização
+    rect0 = texto0.get_rect(center=(largura // 2, altura // 2 - 180))
+    rect1 = texto1.get_rect(center=(largura // 2, altura // 2 - 60))
+    rect2 = texto2.get_rect(center=(largura // 2, altura // 2))
+    rect3 = texto3.get_rect(center=(largura // 2, altura // 2 + 60))
+
+    while rodando:
+        tela.fill(PRETO)
+
+        # Desenhar os blocos com mesmo tamanho do texto
+        pygame.draw.rect(tela, BRANCO, rect1.inflate(5, 5), border_radius=8)
+        pygame.draw.rect(tela, BRANCO, rect2.inflate(5, 5), border_radius=8)
+        pygame.draw.rect(tela, BRANCO, rect3.inflate(5, 5), border_radius=8)
+
+        # Desenhar os textos
+        tela.blit(texto0, rect0)
+        tela.blit(texto1, rect1)
+        tela.blit(texto2, rect2)
+        tela.blit(texto3, rect3)
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                rodando = False
+
+        pygame.display.update()
+
+    pygame.quit()
