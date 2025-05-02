@@ -159,6 +159,7 @@ def jogo():
         
         pygame.display.update()
     pygame.quit()
+    menu()
 
 def menu():
     rodando, largura, altura = Constates()  # Constantes
@@ -188,9 +189,9 @@ def menu():
         tela.fill(PRETO)
 
         # Desenhar os blocos com mesmo tamanho do texto
-        pygame.draw.rect(tela, BRANCO, rect1.inflate(5, 5), border_radius=8)
-        pygame.draw.rect(tela, BRANCO, rect2.inflate(5, 5), border_radius=8)
-        pygame.draw.rect(tela, BRANCO, rect3.inflate(5, 5), border_radius=8)
+        bloco_play = pygame.draw.rect(tela, BRANCO, rect1.inflate(5, 5), border_radius=8)
+        bloco_creditos = pygame.draw.rect(tela, BRANCO, rect2.inflate(5, 5), border_radius=8)
+        bloco_sair = pygame.draw.rect(tela, BRANCO, rect3.inflate(5, 5), border_radius=8)
 
         # Desenhar os textos
         tela.blit(texto0, rect0)
@@ -201,7 +202,17 @@ def menu():
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 rodando = False
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if evento.button == 1:
+                    pos_mouse = pygame.mouse.get_pos()
+                    if bloco_play.collidepoint(pos_mouse):
+                        jogo()
 
+                    elif bloco_creditos.collidepoint(pos_mouse):
+                        print("Clicou em CRÉDITOS")
+
+                    elif bloco_sair.collidepoint(pos_mouse):
+                        rodando = False
         pygame.display.update()
 
     pygame.quit()
