@@ -83,9 +83,10 @@ def texto(fonte,contador_de_pontos,BRANCO,tela):
     texto = fonte.render(mensagem,True,(BRANCO)) #formatando texto
     return tela.blit(texto,(0,0))
 
-def Jogador_saiu_tela(rodando,x,y,largura,altura, som_death):
+def Jogador_saiu_tela(rodando,x,y,largura,altura, som_death, trilha):
     if x <= 0 or x >= largura or y <= 0 or y >= altura:
         som_death.play()
+        trilha.stop()
         rodando = False
     return rodando
 
@@ -98,10 +99,11 @@ def comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,co
     if len(lista_corpo) > contador_de_pontos:
         lista_corpo.pop(0)
 
-def colisao_corpo(x, y, lista_corpo, som_death):
+def colisao_corpo(x, y, lista_corpo, som_death, trilha):
     corpo_sem_cabeca = lista_corpo[:-1]
     if (x, y) in corpo_sem_cabeca:
         som_death.play()
+        trilha.stop()
         return False
     return True
 
@@ -152,8 +154,8 @@ def jogo():
 
         x_comida,y_comida,contador_de_pontos = colisao(jogador,comida,contador_de_pontos, som_morder)
         
-        rodando = colisao_corpo(x, y, lista_corpo, som_death)
-        rodando = Jogador_saiu_tela(rodando,x,y,largura,altura, som_death)
+        rodando = colisao_corpo(x, y, lista_corpo, som_death, trilha)
+        rodando = Jogador_saiu_tela(rodando,x,y,largura,altura, som_death, trilha)
 
         comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,contador_de_pontos)
         
