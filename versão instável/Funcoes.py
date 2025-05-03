@@ -12,6 +12,24 @@ def som():
     som_morder.set_volume(0.5)
     return trilha, som_morder, som_death
 
+# Texturas 
+
+def textura():
+
+    cabeca_cima = pygame.image.load("textura/cabeca_cima.png").convert_alpha()
+    cabeca_baixo = pygame.image.load("textura/cabeca_baixo.png").convert_alpha()
+    cabeca_direita = pygame.image.load("textura/cabeca_direita.png").convert_alpha()
+    cabeca_esquerda = pygame.image.load("textura/cabeca_esquerda.png").convert_alpha()
+    corpo = pygame.image.load("textura/corpo.png").convert_alpha()
+
+    cabeca_cima = pygame.transform.scale(cabeca_cima, (40, 40))
+    cabeca_baixo = pygame.transform.scale(cabeca_baixo, (40, 40))
+    cabeca_direita = pygame.transform.scale(cabeca_direita, (40, 40))
+    cabeca_esquerda = pygame.transform.scale(cabeca_esquerda, (40, 40))
+    corpo = pygame.transform.scale(corpo, (40, 40))
+
+    return corpo, cabeca_baixo, cabeca_cima, cabeca_direita, cabeca_esquerda
+
 def Constates():
     rodando = True
     largura = 640
@@ -40,32 +58,37 @@ def Variaveis(largura,altura):
     lista_Corpo = []
     return velocidade,tamanho_bloco,x,y,x_controle,y_controle,FPS,x_comida,y_comida,contador_de_pontos,lista_Corpo
 
-def teclados(x_controle, y_controle, vel,x,y):
+def teclados(x_controle, y_controle, vel,x,y, direcao, cabeca_baixo, cabeca_cima, cabeca_esquerda, cabeca_direita):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            return None
+            return None, direcao
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and y_controle != vel:
                 y_controle = -vel
                 x_controle = 0
+                direcao = cabeca_cima
 
             elif event.key == pygame.K_DOWN and y_controle != -vel:
                 y_controle = vel
                 x_controle = 0
+                direcao = cabeca_baixo
+
 
             elif event.key == pygame.K_LEFT and x_controle != vel:
                 x_controle = -vel
                 y_controle = 0
+                direcao = cabeca_esquerda
 
             elif event.key == pygame.K_RIGHT and x_controle != -vel:
                 x_controle = vel
                 y_controle = 0
+                direcao = cabeca_direita
 
     x += x_controle
     y += y_controle
 
-    return x_controle, y_controle,x,y
+    return x_controle, y_controle,x,y, direcao
 
 def colisao(jogador,comida,contador_de_pontos, som_morder):
     if jogador.colliderect(comida):
@@ -112,6 +135,8 @@ def jogo():
 
     PRETO,BRANCO,AZUL,VERMELHO,VERDE = Cores() # Cores
 
+    corpo, cabeca_cima, cabeca_baixo, cabeca_esquerda, cabeca_direita = textura() # Texturas
+
     Vel,tamanho_bloco,x,y,x_controle,y_controle,FPS,x_comida,y_comida,contador_de_pontos,lista_corpo = Variaveis(largura,altura) # Outras Variaveis
 
     pygame.init()
@@ -131,6 +156,7 @@ def jogo():
     # TELA/JANELA
 
     clock = pygame.time.Clock()  # Cria o relógio
+    direcao = cabeca_cima
 
     while rodando:
 
@@ -140,15 +166,24 @@ def jogo():
         texto(fonte,contador_de_pontos,BRANCO,tela)
 
         # Teclado
-        teclado = teclados(x_controle, y_controle,Vel,x,y)
+        teclado = teclados(x_controle, y_controle,Vel,x,y,direcao,cabeca_cima, cabeca_baixo, cabeca_direita, cabeca_esquerda)
         if teclado is None:
             rodando = False
         else:
-            x_controle, y_controle,x,y = teclado
+            x_controle, y_controle,x,y, direcao = teclado
+
         # Teclado
 
         # DESENHO DO JOGADOR E DA COMIDA
-        jogador = pygame.draw.rect(tela,AZUL,(x,y,tamanho_bloco,tamanho_bloco))
+        if direcao == cabeca_cima:  # Cima
+            jogador = tela.blit(cabeca_cima, (x, y))
+        elif direcao == cabeca_baixo:  # Baixo
+            jogador = tela.blit(cabeca_baixo, (x, y))
+        elif direcao == cabeca_direita:  # Direita
+            jogador = tela.blit(cabeca_direita, (x, y))
+        elif direcao == cabeca_esquerda:  # Esquerda
+            jogador = tela.blit(cabeca_esquerda, (x, y))
+
         comida = pygame.draw.rect(tela,BRANCO,(x_comida,y_comida,tamanho_bloco,tamanho_bloco))
         # DESENHO DO JOGADOR E DA COMIDA
 
