@@ -16,19 +16,21 @@ def som():
 
 def textura():
 
+    textura_ponto = pygame.image.load("textura/maça.png").convert_alpha()
     cabeca_cima = pygame.image.load("textura/cabeca_cima.png").convert_alpha()
     cabeca_baixo = pygame.image.load("textura/cabeca_baixo.png").convert_alpha()
     cabeca_direita = pygame.image.load("textura/cabeca_direita.png").convert_alpha()
     cabeca_esquerda = pygame.image.load("textura/cabeca_esquerda.png").convert_alpha()
     corpo = pygame.image.load("textura/corpo.png").convert_alpha()
 
+    textura_ponto = pygame.transform.scale(textura_ponto, (40, 40))
     cabeca_cima = pygame.transform.scale(cabeca_cima, (40, 40))
     cabeca_baixo = pygame.transform.scale(cabeca_baixo, (40, 40))
     cabeca_direita = pygame.transform.scale(cabeca_direita, (40, 40))
     cabeca_esquerda = pygame.transform.scale(cabeca_esquerda, (40, 40))
     corpo = pygame.transform.scale(corpo, (40, 40))
 
-    return corpo, cabeca_baixo, cabeca_cima, cabeca_direita, cabeca_esquerda
+    return corpo, cabeca_baixo, cabeca_cima, cabeca_direita, cabeca_esquerda, textura_ponto
 
 def Constates():
     rodando = True
@@ -61,7 +63,7 @@ def Variaveis(largura,altura):
 def teclados(x_controle, y_controle, vel,x,y, direcao, cabeca_baixo, cabeca_cima, cabeca_esquerda, cabeca_direita):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            return None, direcao
+            return None
         
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP and y_controle != vel:
@@ -106,18 +108,20 @@ def texto(fonte,contador_de_pontos,BRANCO,tela):
     texto = fonte.render(mensagem,True,(BRANCO)) #formatando texto
     return tela.blit(texto,(0,0))
 
-def Jogador_saiu_tela(rodando,x,y,largura,altura, som_death, trilha):
-    if x <= 0 or x >= largura or y <= 0 or y >= altura:
+def Jogador_saiu_tela(x, y, tamanho_bloco, largura, altura, som_death, trilha):
+    if x < 0 or x + tamanho_bloco > largura or y < 0 or y + tamanho_bloco > altura:
         som_death.play()
         trilha.stop()
         rodando = False
+    else:
+        rodando = True
     return rodando
 
-def comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,contador_de_pontos):
+def comida_ir_para_o_corpo(x, y, lista_corpo, tela, corpo, direcao, contador_de_pontos):
     lista_corpo.append((x, y))
     for bloco in lista_corpo:
-        pygame.draw.rect(tela, VERDE, (*bloco, tamanho_bloco, tamanho_bloco))
-    jogador = pygame.draw.rect(tela,AZUL,(x,y,tamanho_bloco,tamanho_bloco))
+        tela.blit(corpo, bloco)
+    jogador = tela.blit(direcao, (x,y))
 
     if len(lista_corpo) > contador_de_pontos:
         lista_corpo.pop(0)
@@ -131,15 +135,14 @@ def colisao_corpo(x, y, lista_corpo, som_death, trilha):
     return True
 
 def jogo():
+
     rodando, largura, altura = Constates() # Constantes
 
     PRETO,BRANCO,AZUL,VERMELHO,VERDE = Cores() # Cores
 
-    corpo, cabeca_cima, cabeca_baixo, cabeca_esquerda, cabeca_direita = textura() # Texturas
+    corpo, cabeca_baixo, cabeca_cima, cabeca_direita, cabeca_esquerda, textura_ponto = textura()  # Texturas
 
     Vel,tamanho_bloco,x,y,x_controle,y_controle,FPS,x_comida,y_comida,contador_de_pontos,lista_corpo = Variaveis(largura,altura) # Outras Variaveis
-
-    pygame.init()
 
     # Sons do Game
 
@@ -172,27 +175,20 @@ def jogo():
         else:
             x_controle, y_controle,x,y, direcao = teclado
 
+        
         # Teclado
 
-        # DESENHO DO JOGADOR E DA COMIDA
-        if direcao == cabeca_cima:  # Cima
-            jogador = tela.blit(cabeca_cima, (x, y))
-        elif direcao == cabeca_baixo:  # Baixo
-            jogador = tela.blit(cabeca_baixo, (x, y))
-        elif direcao == cabeca_direita:  # Direita
-            jogador = tela.blit(cabeca_direita, (x, y))
-        elif direcao == cabeca_esquerda:  # Esquerda
-            jogador = tela.blit(cabeca_esquerda, (x, y))
+        jogador = tela.blit(direcao, (x, y))
 
-        comida = pygame.draw.rect(tela,BRANCO,(x_comida,y_comida,tamanho_bloco,tamanho_bloco))
+        comida = comida = tela.blit(textura_ponto, (x_comida, y_comida))
         # DESENHO DO JOGADOR E DA COMIDA
 
         x_comida,y_comida,contador_de_pontos = colisao(jogador,comida,contador_de_pontos, som_morder)
         
         rodando = colisao_corpo(x, y, lista_corpo, som_death, trilha)
-        rodando = Jogador_saiu_tela(rodando,x,y,largura,altura, som_death, trilha)
+        rodando = Jogador_saiu_tela(x, y, tamanho_bloco, largura, altura, som_death, trilha)
 
-        comida_ir_para_o_corpo(x, y, lista_corpo, tela, VERDE, tamanho_bloco,AZUL,contador_de_pontos)
+        comida_ir_para_o_corpo(x, y, lista_corpo, tela, corpo, direcao, contador_de_pontos)
         
         pygame.display.update()
     pygame.quit()
@@ -201,8 +197,6 @@ def jogo():
 def creditos():
     rodando, largura, altura = Constates()  # Constantes
     PRETO, BRANCO, AZUL, VERMELHO, VERDE = Cores()  # Cores
-
-    pygame.init()
 
     # TELA/JANELA
     tela = pygame.display.set_mode((largura, altura))
