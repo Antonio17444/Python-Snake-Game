@@ -12,8 +12,6 @@ def som():
     som_morder.set_volume(0.5)
     return trilha, som_morder, som_death
 
-# Texturas 
-
 def textura():
 
     textura_ponto = pygame.image.load("textura/maça.png").convert_alpha()
@@ -44,7 +42,8 @@ def Cores():
     AZUL = (0, 0, 255)
     VERMELHO = (255, 0, 0)
     VERDE = (0, 255, 0)
-    return PRETO,BRANCO,AZUL,VERMELHO,VERDE
+    VERDE_CLARO = (144,238,144)
+    return PRETO,BRANCO,AZUL,VERMELHO,VERDE,VERDE_CLARO
 
 def Variaveis(largura,altura):
     velocidade = 30  #para evitar bug das textura uma dentro da outra deixar velocidade = tamanho do bloco
@@ -138,7 +137,7 @@ def jogo():
 
     rodando, largura, altura = Constates() # Constantes
 
-    PRETO,BRANCO,AZUL,VERMELHO,VERDE = Cores() # Cores
+    PRETO,BRANCO,AZUL,VERMELHO,VERDE,VERDE_CLARO = Cores() # Cores
 
     corpo, cabeca_baixo, cabeca_cima, cabeca_direita, cabeca_esquerda, textura_ponto = textura()  # Texturas
 
@@ -233,7 +232,7 @@ def creditos():
     
 def menu():
     rodando, largura, altura = Constates()  # Constantes
-    PRETO, BRANCO, AZUL, VERMELHO, VERDE = Cores()  # Cores
+    PRETO, BRANCO, AZUL, VERMELHO, VERDE, VERDE_CLARO = Cores()  # Cores
 
     pygame.init()
 
@@ -244,10 +243,10 @@ def menu():
     # Texto
     fonte = pygame.font.SysFont('Arial', 40, False, True)
     fonte1 = pygame.font.SysFont('Arial', 80, False, True)
-    texto0 = fonte1.render("Snake Game", True, VERMELHO)
-    texto1 = fonte.render("PLAY", True, VERDE)
-    texto2 = fonte.render("CRÉDITOS", True, VERDE)
-    texto3 = fonte.render("SAIR", True, VERDE)
+    texto0 = fonte1.render("Snake Game", True, BRANCO)
+    texto1 = fonte.render("PLAY", True, BRANCO)
+    texto2 = fonte.render("CRÉDITOS", True, BRANCO)
+    texto3 = fonte.render("SAIR", True, BRANCO)
 
     # Retângulos dos textos com centralização
     rect0 = texto0.get_rect(center=(largura // 2, altura // 2 - 180))
@@ -255,13 +254,31 @@ def menu():
     rect2 = texto2.get_rect(center=(largura // 2, altura // 2))
     rect3 = texto3.get_rect(center=(largura // 2, altura // 2 + 60))
 
+    # Desenhar os blocos com mesmo tamanho do texto
+    bloco_play = pygame.draw.rect(tela, VERDE, rect1.inflate(2, 2), border_radius=8)
+    bloco_creditos = pygame.draw.rect(tela, VERDE, rect2.inflate(2, 2), border_radius=8)
+    bloco_sair = pygame.draw.rect(tela, VERDE, rect3.inflate(2, 2), border_radius=8)
+
     while rodando:
         tela.fill(PRETO)
+        pos_mouse = pygame.mouse.get_pos()
 
-        # Desenhar os blocos com mesmo tamanho do texto
-        bloco_play = pygame.draw.rect(tela, BRANCO, rect1.inflate(5, 5), border_radius=8)
-        bloco_creditos = pygame.draw.rect(tela, BRANCO, rect2.inflate(5, 5), border_radius=8)
-        bloco_sair = pygame.draw.rect(tela, BRANCO, rect3.inflate(5, 5), border_radius=8)
+        # desenhando blocos
+        if bloco_play.collidepoint(pos_mouse):
+            bloco_play = pygame.draw.rect(tela, VERDE_CLARO, rect1.inflate(2, 2), border_radius=8)
+        else:
+            bloco_play = pygame.draw.rect(tela, VERDE, rect1.inflate(2, 2), border_radius=8)
+        
+        if bloco_creditos.collidepoint(pos_mouse):
+            bloco_creditos = pygame.draw.rect(tela, VERDE_CLARO, rect2.inflate(2, 2), border_radius=8)
+        else:
+            bloco_creditos = pygame.draw.rect(tela, VERDE, rect2.inflate(2, 2), border_radius=8)
+        
+        if bloco_sair.collidepoint(pos_mouse):
+            bloco_sair = pygame.draw.rect(tela, VERDE_CLARO, rect3.inflate(2, 2), border_radius=8)
+        else:
+            bloco_sair = pygame.draw.rect(tela, VERDE, rect3.inflate(2, 2), border_radius=8)
+
 
         # Desenhar os textos
         tela.blit(texto0, rect0)
@@ -274,13 +291,10 @@ def menu():
                 rodando = False
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if evento.button == 1:
-                    pos_mouse = pygame.mouse.get_pos()
                     if bloco_play.collidepoint(pos_mouse):
                         jogo()
-
                     elif bloco_creditos.collidepoint(pos_mouse):
                         creditos()
-
                     elif bloco_sair.collidepoint(pos_mouse):
                         rodando = False
         pygame.display.update()
