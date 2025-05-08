@@ -195,7 +195,7 @@ def jogo():
 
 def creditos():
     rodando, largura, altura = Constates()  # Constantes
-    PRETO, BRANCO, AZUL, VERMELHO, VERDE = Cores()  # Cores
+    PRETO, BRANCO, AZUL, VERMELHO, VERDE,Verde_claro = Cores()  # Cores
 
     # TELA/JANELA
     tela = pygame.display.set_mode((largura, altura))
