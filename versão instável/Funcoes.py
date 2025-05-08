@@ -111,11 +111,11 @@ def Jogador_saiu_tela(x, y, tamanho_bloco, largura, altura, som_death, trilha):
     if x < 0 or x + tamanho_bloco > largura or y < 0 or y + tamanho_bloco > altura:
         som_death.play()
         trilha.stop()
-        rodando = False
+        flag = 1
     else:
-        rodando = True
-    return rodando
-
+        flag = 0
+    return flag
+    
 def comida_ir_para_o_corpo(x, y, lista_corpo, tela, corpo, direcao, contador_de_pontos):
     lista_corpo.append((x, y))
     for bloco in lista_corpo:
@@ -130,8 +130,10 @@ def colisao_corpo(x, y, lista_corpo, som_death, trilha):
     if (x, y) in corpo_sem_cabeca:
         som_death.play()
         trilha.stop()
-        return False
-    return True
+        rodando = False
+    else:
+        rodando = True
+    return rodando
 
 def jogo():
 
@@ -174,21 +176,21 @@ def jogo():
         else:
             x_controle, y_controle,x,y, direcao = teclado
 
-        
-        # Teclado
+        # DESENHO DO JOGADOR E DA COMIDA
 
         jogador = tela.blit(direcao, (x, y))
 
         comida = comida = tela.blit(textura_ponto, (x_comida, y_comida))
-        # DESENHO DO JOGADOR E DA COMIDA
-
-        x_comida,y_comida,contador_de_pontos = colisao(jogador,comida,contador_de_pontos, som_morder)
         
-        rodando = colisao_corpo(x, y, lista_corpo, som_death, trilha)
-        rodando = Jogador_saiu_tela(x, y, tamanho_bloco, largura, altura, som_death, trilha)
+        x_comida,y_comida,contador_de_pontos = colisao(jogador,comida,contador_de_pontos, som_morder)
 
         comida_ir_para_o_corpo(x, y, lista_corpo, tela, corpo, direcao, contador_de_pontos)
-        
+    
+        rodando = colisao_corpo(x, y, lista_corpo, som_death, trilha)
+
+        if Jogador_saiu_tela(x, y, tamanho_bloco, largura, altura, som_death, trilha) == 1:
+            rodando = False
+
         pygame.display.update()
     pygame.quit()
     menu()
