@@ -199,6 +199,8 @@ def creditos():
     rodando, largura, altura = Constates()  # Constantes
     PRETO, BRANCO, AZUL, VERMELHO, VERDE,Verde_claro = Cores()  # Cores
 
+    al = 1000
+
     # TELA/JANELA
     tela = pygame.display.set_mode((largura, altura))
     pygame.display.set_caption("Snake Game")
@@ -210,13 +212,19 @@ def creditos():
     texto1 = fonte.render("Antonio Henrique Vigo Leite", True, VERDE)
     texto2 = fonte.render("Fernando Pereira Dos Santos", True, VERDE)
 
-    # Retângulos dos textos com centralização
-    rect0 = texto0.get_rect(center=(largura // 2, altura // 2 - 180))
-    rect1 = texto1.get_rect(center=(largura // 2, altura // 2 - 60))
-    rect2 = texto2.get_rect(center=(largura // 2, altura // 2))
+    relogio = pygame.time.Clock()
 
     while rodando:
         tela.fill(PRETO)
+        relogio.tick(30)
+        
+        # Retângulos dos textos com centralização
+        
+        rect0 = texto0.get_rect(center=(largura // 2, al // 2 - 180))
+        rect1 = texto1.get_rect(center=(largura // 2, al // 2 - 60))
+        rect2 = texto2.get_rect(center=(largura // 2, al // 2))
+
+        al -= 10
 
         # Desenhar os textos
         tela.blit(texto0, rect0)
